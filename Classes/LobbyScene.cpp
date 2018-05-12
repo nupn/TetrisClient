@@ -24,7 +24,6 @@ static void problemLoading(const char* filename)
 // on "init" you need to initialize your instance
 bool CLobbyScene::init()
 {
-
 	//////////////////////////////
 	// 1. super init first
 	if (!Scene::init())
@@ -237,7 +236,7 @@ void CLobbyScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 			m_vecChatMsg.pop_front();
 		}
 
-		m_vecChatMsg.push_back(pTextField->getString());
+		m_vecChatMsg.push_back(pTextField->GetString());
 		m_ptableView->reloadData();
 		pTextField->setString("");
 

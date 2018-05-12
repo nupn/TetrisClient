@@ -57,8 +57,8 @@ static std::size_t _calcCharCount(const char * text)
 //////////////////////////////////////////////////////////////////////////
 
 TextFieldKR::TextFieldKR()
-	: _charCount(0)
-	, _placeHolder("")   // prevent Label initWithString assertion
+	: 
+	_placeHolder("")   // prevent Label initWithString assertion
 	, _colorText(Color4B::WHITE)
 	, _secureTextEntry(false)
 	, _passwordStyleText(PASSWORD_STYLE_TEXT_DEFAULT)
@@ -216,12 +216,15 @@ bool TextFieldKR::canDetachWithIME()
 void TextFieldKR::insertText(const char * text, size_t len)
 {
 	m_koreanIME.InputCharacter(*text);
+	updateCursor();
 	UpdateString();
 }
 
 void TextFieldKR::deleteBackward()
 {
 	m_koreanIME.OnDelete();
+	updateCursor();
+	UpdateString();
 }
 
 const std::string& TextFieldKR::getContentText()
@@ -231,10 +234,15 @@ const std::string& TextFieldKR::getContentText()
 
 void TextFieldKR::setCursorPosition(std::size_t cursorPosition)
 {
-	if (_cursorEnabled && cursorPosition <= (std::size_t)_charCount)
+	if (_cursorEnabled)
 	{
-		_cursorPosition = cursorPosition;
-		_cursorShowingTime = CURSOR_TIME_SHOW_HIDE * 2.0f;
+		if (m_koreanIME.SetCursor(cursorPosition))
+		{
+			updateCursor();
+			UpdateString();
+
+			_cursorShowingTime = CURSOR_TIME_SHOW_HIDE * 2.0f;
+		}
 	}
 }
 
@@ -245,7 +253,7 @@ void TextFieldKR::setCursorFromPoint(const Vec2 &point, const Camera* camera)
 		// Reset Label, no cursor
 		bool oldIsAttachWithIME = _isAttachWithIME;
 		_isAttachWithIME = false;
-		updateCursorDisplayText();
+		updateCursor();
 
 		Rect rect;
 		rect.size = getContentSize();
@@ -273,7 +281,8 @@ void TextFieldKR::setCursorFromPoint(const Vec2 &point, const Camera* camera)
 
 		// Set cursor
 		_isAttachWithIME = oldIsAttachWithIME;
-		updateCursorDisplayText();
+		updateCursor();
+		UpdateString();
 	}
 }
 
@@ -285,9 +294,9 @@ void TextFieldKR::setAttachWithIME(bool isAttachWithIME)
 
 		if (_isAttachWithIME)
 		{
-			setCursorPosition(_charCount);
+			setCursorPosition(m_koreanIME.GetCursorIdx());
 		}
-		updateCursorDisplayText();
+		updateCursor();
 	}
 }
 
@@ -389,10 +398,12 @@ void TextFieldKR::makeStringSupportCursor(std::string& displayText)
 
 			stringUTF8.replace(displayText);
 
+			/*
 			if (_cursorPosition > stringUTF8.length())
 			{
 				_cursorPosition = stringUTF8.length();
 			}
+			*/
 			std::string cursorChar;
 			// \b - Next char not change x position
 			cursorChar.push_back((char)TextFormatter::NextCharNoChangeX);
@@ -404,10 +415,10 @@ void TextFieldKR::makeStringSupportCursor(std::string& displayText)
 	}
 }
 
-void TextFieldKR::updateCursorDisplayText()
+void TextFieldKR::updateCursor()
 {
 	// Update Label content
-	UpdateString();
+	_cursorPosition = m_koreanIME.GetCursorIdx();
 }
 
 void TextFieldKR::setCursorChar(char cursor)
@@ -415,7 +426,7 @@ void TextFieldKR::setCursorChar(char cursor)
 	if (_cursorChar != cursor)
 	{
 		_cursorChar = cursor;
-		updateCursorDisplayText();
+		updateCursor();
 	}
 }
 
@@ -428,32 +439,19 @@ void TextFieldKR::controlKey(EventKeyboard::KeyCode keyCode)
 		case EventKeyboard::KeyCode::KEY_HOME:
 		case EventKeyboard::KeyCode::KEY_KP_HOME:
 			setCursorPosition(0);
-			updateCursorDisplayText();
 			break;
 		case EventKeyboard::KeyCode::KEY_END:
-			setCursorPosition(_charCount);
-			updateCursorDisplayText();
+			setCursorPosition(m_koreanIME.GetStringLen());
 			break;
 		case EventKeyboard::KeyCode::KEY_DELETE:
 		case EventKeyboard::KeyCode::KEY_KP_DELETE:
-			if (_cursorPosition < (std::size_t)_charCount)
-			{
-				deleteBackward();
-			}
+			deleteBackward();
 			break;
 		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-			if (_cursorPosition)
-			{
-				setCursorPosition(_cursorPosition - 1);
-				updateCursorDisplayText();
-			}
+			setCursorPosition(_cursorPosition - 1);
 			break;
 		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-			if (_cursorPosition < (std::size_t)_charCount)
-			{
-				setCursorPosition(_cursorPosition + 1);
-				updateCursorDisplayText();
-			}
+			setCursorPosition(_cursorPosition + 1);
 			break;
 		case EventKeyboard::KeyCode::KEY_ESCAPE:
 			detachWithIME();
@@ -464,7 +462,7 @@ void TextFieldKR::controlKey(EventKeyboard::KeyCode keyCode)
 	}
 }
 
-const std::string& TextFieldKR::getString() const
+std::string TextFieldKR::GetString() const
 {
 	return m_koreanIME.GetString();
 }
@@ -494,8 +492,7 @@ void TextFieldKR::setCursorEnabled(bool enabled)
 			_cursorEnabled = enabled;
 			if (_cursorEnabled)
 			{
-				_cursorPosition = _charCount;
-
+				updateCursor();
 				scheduleUpdate();
 			}
 			else
@@ -555,7 +552,6 @@ void TextFieldKR::UpdateString()
 	if (charCount > 0)
 	{
 		displayText = m_koreanIME.GetString();
-		charCount = m_koreanIME.GetStringLen();
 		if (_secureTextEntry)
 		{
 			displayText = "";
@@ -567,12 +563,7 @@ void TextFieldKR::UpdateString()
 			}
 		}
 	}
-
-	if (_cursorEnabled && charCount != _charCount)
-	{
-		_cursorPosition = charCount;
-	}
-
+	
 	if (_cursorEnabled)
 	{
 		// Need for recreate all letters in Label
@@ -592,5 +583,4 @@ void TextFieldKR::UpdateString()
 		Label::setTextColor(_colorText);
 		Label::setString(displayText);
 	}
-	_charCount = charCount;
 }

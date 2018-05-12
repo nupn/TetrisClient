@@ -56,8 +56,7 @@ public:
 	* Query the currently inputed character count.
 	*@return The total input character count.
 	*/
-	std::size_t getCharCount() const { return _charCount; }
-
+	
 	/**
 	* Query the color of place holder.
 	*@return The place holder color.
@@ -98,7 +97,7 @@ public:
 	* Query the input text of TextField.
 	*@return Get the input text of TextField.
 	*/
-	virtual const std::string& getString() const override;
+	std::string GetString() const;
 
 	/**
 	* Change placeholder text.
@@ -172,7 +171,6 @@ protected:
 	virtual const std::string& getContentText() override;
 	virtual void controlKey(EventKeyboard::KeyCode keyCode) override;
 
-	std::size_t _charCount;
 
 	std::string _placeHolder;
 	Color4B _colorSpaceHolder;
@@ -193,7 +191,7 @@ protected:
 	bool _isAttachWithIME;
 
 	void makeStringSupportCursor(std::string& displayText);
-	void updateCursorDisplayText();
+	void updateCursor();
 	void setAttachWithIME(bool isAttachWithIME);
 
 private:
