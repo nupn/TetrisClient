@@ -110,6 +110,7 @@ void InputText::onTouchEnded(Touch  *touch, Event  *event)
 		{
 			// TextFieldTTFTest be clicked
 			node->attachWithIME();
+			node->setCursorFromPoint(endPos, Camera::getVisitingCamera());
 
 		}
 		else

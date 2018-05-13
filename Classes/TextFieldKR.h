@@ -175,6 +175,9 @@ protected:
 	std::string _placeHolder;
 	Color4B _colorSpaceHolder;
 	Color4B _colorText;
+	Color3B _colorText3B;
+	Color3B _colorBackGround;
+
 
 	bool _secureTextEntry;
 	std::string _passwordStyleText;
@@ -183,6 +186,10 @@ protected:
 	bool _cursorEnabled;
 	// Current position cursor
 	std::size_t _cursorPosition;
+	int _cursorCharacterIdx = 0;
+	bool m_bShowBackgound = false;
+	Sprite* m_pBackground = nullptr;
+
 	// Char showing cursor
 	char _cursorChar;
 	// >0 - show, <0 - hide

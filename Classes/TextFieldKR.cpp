@@ -57,9 +57,12 @@ static std::size_t _calcCharCount(const char * text)
 //////////////////////////////////////////////////////////////////////////
 
 TextFieldKR::TextFieldKR()
-	: 
+	:
 	_placeHolder("")   // prevent Label initWithString assertion
 	, _colorText(Color4B::WHITE)
+	, _colorText3B(Color3B::WHITE)
+	, _colorBackGround(Color3B::BLACK)
+
 	, _secureTextEntry(false)
 	, _passwordStyleText(PASSWORD_STYLE_TEXT_DEFAULT)
 	, _cursorEnabled(false)
@@ -248,12 +251,13 @@ void TextFieldKR::setCursorPosition(std::size_t cursorPosition)
 
 void TextFieldKR::setCursorFromPoint(const Vec2 &point, const Camera* camera)
 {
-	if (_cursorEnabled)
+	if (_cursorEnabled && m_koreanIME.GetStringLen() > 0)
 	{
+		Label::setString(m_koreanIME.GetString());
+
 		// Reset Label, no cursor
 		bool oldIsAttachWithIME = _isAttachWithIME;
 		_isAttachWithIME = false;
-		updateCursor();
 
 		Rect rect;
 		rect.size = getContentSize();
@@ -281,8 +285,6 @@ void TextFieldKR::setCursorFromPoint(const Vec2 &point, const Camera* camera)
 
 		// Set cursor
 		_isAttachWithIME = oldIsAttachWithIME;
-		updateCursor();
-		UpdateString();
 	}
 }
 
@@ -312,6 +314,77 @@ void TextFieldKR::setTextColor(const Color4B &color)
 void TextFieldKR::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags)
 {
 	Label::visit(renderer, parentTransform, parentFlags);
+	/*
+	if (!_visible || (_utf8Text.empty() && _children.empty()))
+	{
+		return;
+	}
+
+	if (_systemFontDirty || _contentDirty)
+	{
+		updateContent();
+	}
+
+	uint32_t flags = processParentFlags(parentTransform, parentFlags);
+
+	if (!_utf8Text.empty() && _shadowEnabled && (_shadowDirty || (flags & FLAGS_DIRTY_MASK)))
+	{
+		_position.x += _shadowOffset.width;
+		_position.y += _shadowOffset.height;
+		_transformDirty = _inverseDirty = true;
+
+		_shadowTransform = transform(parentTransform);
+
+		_position.x -= _shadowOffset.width;
+		_position.y -= _shadowOffset.height;
+		_transformDirty = _inverseDirty = true;
+
+		_shadowDirty = false;
+	}
+
+	bool visibleByCamera = isVisitableByVisitingCamera();
+	if (_children.empty() && !_textSprite && !visibleByCamera)
+	{
+		return;
+	}
+
+	// IMPORTANT:
+	// To ease the migration to v3.0, we still support the Mat4 stack,
+	// but it is deprecated and your code should not rely on it
+	_director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+	_director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);
+
+	if (!_children.empty())
+	{
+		sortAllChildren();
+
+		int i = 0;
+		// draw children zOrder < 0
+		this->drawSelf(visibleByCamera, renderer, flags);
+		for (auto size = _children.size(); i < size; ++i)
+		{
+			auto node = _children.at(i);
+
+			if (node && node->getLocalZOrder() < 0)
+				node->visit(renderer, _modelViewTransform, flags);
+			else
+				break;
+		}
+
+
+		for (auto it = _children.cbegin() + i, itCend = _children.cend(); it != itCend; ++it)
+		{
+			(*it)->visit(renderer, _modelViewTransform, flags);
+		}
+
+	}
+	else
+	{
+		this->drawSelf(visibleByCamera, renderer, flags);
+	}
+
+	_director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+	*/
 }
 
 void TextFieldKR::update(float delta)
@@ -324,17 +397,35 @@ void TextFieldKR::update(float delta)
 			_cursorShowingTime = CURSOR_TIME_SHOW_HIDE;
 		}
 		// before cursor inserted '\b', need next letter
-		auto sprite = getLetter((int)_cursorPosition + 1);
-
+		auto sprite = getLetter(_cursorCharacterIdx);
+		
 		if (sprite)
 		{
 			if (_cursorShowingTime >= 0.0f)
 			{
-				sprite->setOpacity(255);
+
+				if (m_bShowBackgound && m_pBackground)
+				{
+					m_pBackground->setOpacity(0);
+					sprite->setColor(_colorText3B);
+				}
+				else
+				{
+					sprite->setOpacity(255);
+				}
 			}
 			else
 			{
-				sprite->setOpacity(0);
+
+				if (m_bShowBackgound && m_pBackground)
+				{
+					m_pBackground->setOpacity(255);
+					sprite->setColor(_colorBackGround);
+				}
+				else
+				{
+					sprite->setOpacity(0);
+				}
 			}
 			sprite->setDirty(true);
 		}
@@ -384,16 +475,59 @@ void TextFieldKR::appendString(const std::string& text)
 
 void TextFieldKR::makeStringSupportCursor(std::string& displayText)
 {
-	if (_cursorEnabled && _isAttachWithIME)
+	if (m_pBackground == nullptr)
+	{
+		auto sprite = Sprite::create();
+		sprite->setTextureRect(Rect(0, 0, 10, 10));
+		sprite->setColor(_colorText3B);
+		sprite->setOpacity(255);
+		sprite->setPosition(Vec2(0, 0));
+		sprite->setVisible(false);
+
+		int nSize = getTTFConfig().fontSize;
+		sprite->setContentSize(Size(nSize, nSize));
+		//addChild(sprite, 0);
+		m_pBackground = sprite;
+	}
+
+	if (_cursorEnabled)
 	{
 		if (displayText.empty())
 		{
 			// \b - Next char not change x position
 			displayText.push_back((char)TextFormatter::NextCharNoChangeX);
 			displayText.push_back(_cursorChar);
+
+
+			Label::setTextColor(_colorText);
+			Label::setString(displayText);
+		}
+		else if (m_koreanIME.GetState() == CKoreanIME::kCursorTyping)
+		{
+
+			Label::setTextColor(_colorText);
+			Label::setString(displayText);
+
+			_cursorCharacterIdx = _cursorPosition;
+			auto sprite = getLetter(_cursorCharacterIdx);
+			m_bShowBackgound = true;
+			if (m_pBackground && sprite)
+			{
+				m_pBackground->setPosition(sprite->getPosition());
+				//m_pBackground->setContentSize(sprite->getContentSize());
+				m_pBackground->setOpacity(0);
+				m_pBackground->setVisible(true);
+				addChild(m_pBackground,-1);
+			}
 		}
 		else
 		{
+			m_bShowBackgound = false;
+			if (m_pBackground)
+			{
+				m_pBackground->setVisible(false);
+			}
+
 			StringUtils::StringUTF8 stringUTF8;
 
 			stringUTF8.replace(displayText);
@@ -410,8 +544,19 @@ void TextFieldKR::makeStringSupportCursor(std::string& displayText)
 			cursorChar.push_back(_cursorChar);
 			stringUTF8.insert(_cursorPosition, cursorChar);
 
+			_cursorCharacterIdx = _cursorPosition + 1;
 			displayText = stringUTF8.getAsCharSequence();
+
+
+			Label::setTextColor(_colorText);
+			Label::setString(displayText);
 		}
+	}
+	else
+	{
+
+		Label::setTextColor(_colorText);
+		Label::setString(displayText);
 	}
 }
 
@@ -548,8 +693,8 @@ void TextFieldKR::UpdateString()
 	std::string displayText;
 
 	std::size_t charCount = m_koreanIME.GetStringLen();
-
 	if (charCount > 0)
+
 	{
 		displayText = m_koreanIME.GetString();
 		if (_secureTextEntry)
@@ -568,6 +713,7 @@ void TextFieldKR::UpdateString()
 	{
 		// Need for recreate all letters in Label
 		Label::removeAllChildrenWithCleanup(false);
+		m_pBackground = nullptr;
 	}
 
 	// if there is no input text, display placeholder instead
@@ -579,8 +725,5 @@ void TextFieldKR::UpdateString()
 	else
 	{
 		makeStringSupportCursor(displayText);
-
-		Label::setTextColor(_colorText);
-		Label::setString(displayText);
 	}
 }

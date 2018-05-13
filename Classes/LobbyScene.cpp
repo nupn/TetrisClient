@@ -83,7 +83,7 @@ bool CLobbyScene::init()
 
 	//CCEditbox
 
-	//*
+	//*w
 	auto pTextField = TextFieldKR::textFieldWithPlaceHolder("<click here for input>",
 		Size(500, 50),
 		TextHAlignment::LEFT,
@@ -94,6 +94,7 @@ bool CLobbyScene::init()
 	pTextField->setTag(20);
 	addChild(pTextField);
 	//*/
+
 
 	/*
 	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder("<click here for input>",
@@ -122,7 +123,6 @@ bool CLobbyScene::init()
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	AddTrackNode(pTextField);
-
 
 	TableView* tableView = TableView::create(this, Size(1000, 600));
 	tableView->setDirection(ScrollView::Direction::VERTICAL);
