@@ -33,6 +33,9 @@
     <ClCompile Include="..\Classes\TextFieldKR.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\NetworkThread.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -54,6 +57,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\TextFieldKR.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\NetworkThread.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

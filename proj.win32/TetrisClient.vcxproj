@@ -151,6 +151,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\LobbyScene.cpp" />
+    <ClCompile Include="..\Classes\NetworkThread.cpp" />
     <ClCompile Include="..\Classes\ScrollBar.cpp" />
     <ClCompile Include="..\Classes\TextFieldKR.cpp" />
     <ClCompile Include="KeyboardNotificationLayer.cpp" />
@@ -160,6 +161,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\LobbyScene.h" />
+    <ClInclude Include="..\Classes\NetworkThread.h" />
     <ClInclude Include="..\Classes\ScrollBar.h" />
     <ClInclude Include="..\Classes\TextFieldKR.h" />
     <ClInclude Include="KeyboardNotificationLayer.h" />

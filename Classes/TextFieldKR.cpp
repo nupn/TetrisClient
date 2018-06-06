@@ -462,11 +462,6 @@ void TextFieldKR::setColorSpaceHolder(const Color4B& color)
 // properties
 //////////////////////////////////////////////////////////////////////////
 
-// input text property
-void TextFieldKR::setString(const std::string &text)
-{
-
-}
 
 void TextFieldKR::appendString(const std::string& text)
 {
@@ -475,21 +470,6 @@ void TextFieldKR::appendString(const std::string& text)
 
 void TextFieldKR::makeStringSupportCursor(std::string& displayText)
 {
-	if (m_pBackground == nullptr)
-	{
-		auto sprite = Sprite::create();
-		sprite->setTextureRect(Rect(0, 0, 10, 10));
-		sprite->setColor(_colorText3B);
-		sprite->setOpacity(255);
-		sprite->setPosition(Vec2(0, 0));
-		sprite->setVisible(false);
-
-		int nSize = getTTFConfig().fontSize;
-		sprite->setContentSize(Size(nSize, nSize));
-		//addChild(sprite, 0);
-		m_pBackground = sprite;
-	}
-
 	if (_cursorEnabled)
 	{
 		if (displayText.empty())
@@ -504,6 +484,21 @@ void TextFieldKR::makeStringSupportCursor(std::string& displayText)
 		}
 		else if (m_koreanIME.GetState() == CKoreanIME::kCursorTyping)
 		{
+			if (m_pBackground == nullptr)
+			{
+				auto sprite = Sprite::create();
+				sprite->setTextureRect(Rect(0, 0, 10, 10));
+				sprite->setColor(_colorText3B);
+				sprite->setOpacity(255);
+				sprite->setPosition(Vec2(0, 0));
+				sprite->setVisible(false);
+
+				int nSize = getTTFConfig().fontSize;
+				sprite->setContentSize(Size(nSize, nSize));
+				//addChild(sprite, 0);
+				m_pBackground = sprite;
+			}
+
 
 			Label::setTextColor(_colorText);
 			Label::setString(displayText);
@@ -712,8 +707,8 @@ void TextFieldKR::UpdateString()
 	if (_cursorEnabled)
 	{
 		// Need for recreate all letters in Label
-		Label::removeAllChildrenWithCleanup(false);
 		m_pBackground = nullptr;
+		Label::removeAllChildrenWithCleanup(false);
 	}
 
 	// if there is no input text, display placeholder instead
@@ -726,4 +721,12 @@ void TextFieldKR::UpdateString()
 	{
 		makeStringSupportCursor(displayText);
 	}
+}
+
+void TextFieldKR::Clear()
+{
+	m_bShowBackgound = false;
+	m_koreanIME.Clear();
+	UpdateString();
+	updateCursor();
 }

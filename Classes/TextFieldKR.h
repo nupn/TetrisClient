@@ -82,12 +82,6 @@ public:
 	virtual void setTextColor(const Color4B& textColor) override;
 
 	/**
-	* Change input text of TextField.
-	*@param text The input text of TextField.
-	*/
-	virtual void setString(const std::string& text) override;
-
-	/**
 	* Append to input text of TextField.
 	*@param text The append text of TextField.
 	*/
@@ -156,6 +150,8 @@ public:
 	* @js NA
 	*/
 	void setCursorFromPoint(const Vec2 &point, const Camera* camera);
+
+	void Clear();
 
 protected:
 	//////////////////////////////////////////////////////////////////////////

@@ -238,7 +238,7 @@ void CLobbyScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 
 		m_vecChatMsg.push_back(pTextField->GetString());
 		m_ptableView->reloadData();
-		pTextField->setString("");
+		pTextField->Clear();
 
 		bar->ContentRefresh(m_ptableView->getContentSize().height);
 		bar->OffsetRefresh(m_ptableView->getContentOffset().y);
