@@ -36,6 +36,11 @@
     <ClCompile Include="..\Classes\NetworkThread.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="PacketHandler.cpp" />
+    <ClCompile Include="Socket.cpp" />
+    <ClCompile Include="..\Classes\ServerMessage.pb.cc">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -60,6 +65,11 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\NetworkThread.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketHandler.h" />
+    <ClInclude Include="Socket.h" />
+    <ClInclude Include="..\Classes\ServerMessage.pb.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

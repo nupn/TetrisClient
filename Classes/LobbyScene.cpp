@@ -1,6 +1,7 @@
 #include "LobbyScene.h"
 #include "SimpleAudioEngine.h"
 #include "TextFieldKR.h"
+#include "NetworkThread.h"
 
 USING_NS_CC;
 USING_NS_CC_EXT;
@@ -151,7 +152,6 @@ bool CLobbyScene::init()
 
 	AddTrackNode(pTextField);
 
-
 	return true;
 }
 
@@ -236,11 +236,41 @@ void CLobbyScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 			m_vecChatMsg.pop_front();
 		}
 
-		m_vecChatMsg.push_back(pTextField->GetString());
+		//m_vecChatMsg.push_back(pTextField->GetString());
+
+		ServerMessage::Chat sendMessage;
+		sendMessage.set_dst_id(10);
+		sendMessage.set_name("aas");
+		sendMessage.set_message(pTextField->GetString());
+
+		CNetworkThread::GetMutable().SendPacket(ServerMessage::CHAT, &sendMessage);
+
+		/*
 		m_ptableView->reloadData();
 		pTextField->Clear();
 
 		bar->ContentRefresh(m_ptableView->getContentSize().height);
 		bar->OffsetRefresh(m_ptableView->getContentOffset().y);
+		//*/
 	}
+}
+
+void CLobbyScene::Handle(const ServerMessage::Chat& message)
+{
+	if (m_vecChatMsg.size() >= m_nMaxChatMsg)
+	{
+		m_vecChatMsg.pop_front();
+	}
+
+	m_vecChatMsg.push_back(message.message());
+
+	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]()->void 
+	{
+
+		m_ptableView->reloadData();
+
+		bar->ContentRefresh(m_ptableView->getContentSize().height);
+		bar->OffsetRefresh(m_ptableView->getContentOffset().y);
+	});
+
 }

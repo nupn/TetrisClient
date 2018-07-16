@@ -6,13 +6,17 @@
 #include "../proj.win32/KeyboardNotificationLayer.h"
 #include "extensions/cocos-ext.h"
 #include "ScrollBar.h"
+#include "../proj.win32/PacketHandler.h"
 
 #include <deque>
 #include <string>
 
 using namespace std;
 
-class CLobbyScene : public cocos2d::Scene, InputText, public cocos2d::extension::TableViewDataSource, public cocos2d::extension::TableViewDelegate
+class CLobbyScene : public cocos2d::Scene, InputText,
+	public cocos2d::extension::TableViewDataSource,
+	public cocos2d::extension::TableViewDelegate,
+	public PacketHandler
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -42,6 +46,7 @@ public:
 
 	CREATE_FUNC(CLobbyScene);
 
+	virtual void Handle(const ServerMessage::Chat& message) override;
 private:
 
 	deque<string> m_vecChatMsg;
