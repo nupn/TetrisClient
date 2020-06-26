@@ -24,21 +24,31 @@
     <ClCompile Include="..\Classes\LobbyScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="KeyboardNotificationLayer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\ScrollBar.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\TextFieldKR.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\NetworkThread.cpp">
+    <ClCompile Include="..\Classes\msg.pb.cc">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="PacketHandler.cpp" />
-    <ClCompile Include="Socket.cpp" />
-    <ClCompile Include="..\Classes\ServerMessage.pb.cc">
+    <ClCompile Include="..\Classes\KeyboardNotificationLayer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PacketHandler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CServer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CServerMgr.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ChatLayer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CPlayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -55,21 +65,34 @@
     <ClInclude Include="..\Classes\LobbyScene.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="KeyboardNotificationLayer.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\ScrollBar.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\TextFieldKR.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\NetworkThread.h">
+    <ClInclude Include="..\Classes\msg.pb.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="PacketHandler.h" />
-    <ClInclude Include="Socket.h" />
-    <ClInclude Include="..\Classes\ServerMessage.pb.h">
+    <ClInclude Include="..\Classes\KeyboardNotificationLayer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PacketHandler.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CServer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CServerMgr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ChatLayer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CPlayer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\protocol.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

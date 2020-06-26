@@ -1,7 +1,7 @@
 #pragma once
 #include <thread>
-#include "../proj.win32/Socket.h"
-#include "../proj.win32/PacketHandler.h"
+#include "Socket.h"
+#include "PacketHandler.h"
 
 #include <boost/serialization/singleton.hpp>
 

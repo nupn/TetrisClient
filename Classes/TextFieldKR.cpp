@@ -218,6 +218,11 @@ bool TextFieldKR::canDetachWithIME()
 
 void TextFieldKR::insertText(const char * text, size_t len)
 {
+	if (m_nInputMax!= 0 && m_koreanIME.GetStringLen() > m_nInputMax)
+	{
+		return;
+	}
+
 	m_koreanIME.InputCharacter(*text);
 	updateCursor();
 	UpdateString();
@@ -729,4 +734,9 @@ void TextFieldKR::Clear()
 	m_koreanIME.Clear();
 	UpdateString();
 	updateCursor();
+}
+
+void TextFieldKR::setInputMax(int nMax)
+{
+	m_nInputMax = nMax;
 }

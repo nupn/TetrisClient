@@ -2,6 +2,8 @@
 #include "AppDelegate.h"
 #include "cocos2d.h"
 
+#include <functional>
+
 USING_NS_CC;
 /*
 int WINAPI _tWinMain(HINSTANCE hInstance,
@@ -20,7 +22,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
 
 int main()
 {
-
+    std::placeholders::_1;
 
 	// create the application instance
 	AppDelegate app;

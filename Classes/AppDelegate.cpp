@@ -3,7 +3,6 @@
 
 #include <imm.h>
 #include "boost\serialization\singleton.hpp"
-#include "NetworkThread.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -100,11 +99,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // create a scene. it's an autorelease object
     auto scene = CLobbyScene::createScene();
 	//CNetworkThread::GetMutable().Start("127.0.0.1", 19897, this);
-	
-	CNetworkThread& net = boost::serialization::singleton<CNetworkThread>::get_mutable_instance();
-	net.Start("127.0.0.1", 19897, dynamic_cast<PacketHandler*>(scene));
-
-
     // run
     director->runWithScene(scene);
 

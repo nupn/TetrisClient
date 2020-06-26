@@ -1,0 +1,15 @@
+package game;
+
+message chat_message {
+	required int32 id = 1;
+	required string name = 2;
+	required string msg = 3;
+}
+
+message c_login {
+}
+
+message s_login {
+	required int32 id = 1;
+	required string name = 2;
+}

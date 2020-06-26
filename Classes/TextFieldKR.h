@@ -1,8 +1,7 @@
 #pragma once
-
 #include "cocos2d.h"
-#include "NPCppTool/KoreanIME.h"
-using namespace NPCL;
+#include "KoreanIME.h"
+using namespace NPL;
 
 USING_NS_CC;
 
@@ -153,6 +152,8 @@ public:
 
 	void Clear();
 
+	void setInputMax(int nMax);
+
 protected:
 	//////////////////////////////////////////////////////////////////////////
 	// IMEDelegate interface
@@ -201,7 +202,6 @@ private:
 	void UpdateString();
 
 private:
-	class LengthStack;
-	LengthStack * _lens;
-	NPCL::CKoreanIME m_koreanIME;
+	int m_nInputMax = 0;
+	NPL::CKoreanIME m_koreanIME;
 };

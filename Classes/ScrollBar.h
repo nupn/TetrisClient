@@ -38,7 +38,7 @@ private:
 	int		m_nBarMinSize			 = 0;
 	int		m_nBarFloatingHeight	 = 0;
     float	m_fScrollViewSize		 = 0;
-	float	m_fScrollViewContentSize = 0;
+	float	m_fScrollViewContentSize = 1;
 	float	m_fbarMoveableHeigth	 = 0;
     float	m_fBarSize				= 0 ;
 	int		m_nPressingButtonTag	= 0;
